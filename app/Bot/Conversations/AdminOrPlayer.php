@@ -6,6 +6,7 @@ class AdminOrPlayer extends OsagoBase
 {
     public function processMessage($message)
     {
+        //Распределяет админа и игроков
         switch ($message->text){
             case '1':
                 $this->sendText('Введите свой nickName');

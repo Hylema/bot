@@ -111,6 +111,7 @@ class Admin extends Game
 
     }
 
+    //Метод для перемешивания массива данных файла game.json и устанавливает флаг для игроков
     public function shakeArrayAndChangeStatusForAdmin()
     {
         $fileOpen = $this->open();

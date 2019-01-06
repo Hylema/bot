@@ -60,8 +60,10 @@ class Game extends OsagoBase
 
     public function gameResult()
     {
+        //Показать у кого сколько очков
         $this->sendResult();
 
+        //Если у одного из игроков есть 10 очков - игра заканчивается
         if($this->ifPlayerHave10Points()){
             //игра окончена
             $this->gameEnd();
@@ -71,6 +73,7 @@ class Game extends OsagoBase
         }
     }
 
+    //Метод для вывода сообщений у кого сколько очков
     public function sendResult()
     {
         $arrAnswer = $this->open();
@@ -79,6 +82,7 @@ class Game extends OsagoBase
         }
     }
 
+    //Если у одного из игроков есть 10 очков - игра заканчивается
     public function ifPlayerHave10Points()
     {
         $fileOpen = $this->open();
@@ -100,6 +104,25 @@ class Game extends OsagoBase
     {
         $this->sendText('Игра окончена, победил игрок с ником - '.$this->getNameWinner());
         $this->bot->selectConversation('Basic');
+    }
+
+    //Метод для получения имя победителя
+    public function getNameWinner()
+    {
+        $fileOpen = $this->open();
+        return $fileOpen[$this->getIndexWinner()]->nickName;
+    }
+
+    //Метод для получения индекса победителя
+    public function getIndexWinner()
+    {
+        $fileOpen = $this->open();
+        foreach ($fileOpen as $keys => $values){
+            if($values->points >= 10){
+                return $keys;
+            }
+        }
+        return false;
     }
 
 
@@ -126,23 +149,7 @@ class Game extends OsagoBase
         return false;
     }
 
-    public function getNameWinner()
-    {
-        $fileOpen = $this->open();
-        return $fileOpen[$this->getIndexWinner()]->nickName;
-    }
-
-    public function getIndexWinner()
-    {
-        $fileOpen = $this->open();
-        foreach ($fileOpen as $keys => $values){
-            if($values->points >= 10){
-                return $keys;
-            }
-        }
-        return false;
-    }
-
+    //Метод для проверки, все ли игроки получили очки
     public function checkVotingPlayers()
     {
         $fileOpen = $this->open();
@@ -158,12 +165,13 @@ class Game extends OsagoBase
         //Если файл не пустой, то цикл пропускает нас дальше
         $this->cycleNSec('ifFileNotEmpty', 3);
 
-        //Если админ загадал уже слово, то цикл пропускает нас дальше
+        //Если админ загадал уже слово, то цикл пропускает нас дальше (Этот цикл нужен для повторной игры)
         $this->cycleNSec('checkAdminWord', 3);
 
         $this->sendText('Загаданное слово админа: '.$this->getAdminWord().', напишите свое определение.');
     }
 
+    //Метод для проверки, загадал ли админ слово
     public function checkAdminWord()
     {
         if($this->getAdminWord() != ''){
@@ -180,11 +188,22 @@ class Game extends OsagoBase
         return $openFile[$this->getKeyAdmin()]->adminWord;
     }
 
+    //Удаляем слово админа
     public function deleteWord()
     {
         $openFile = $this->open();
         $openFile[$this->getKeyAdmin()]->adminWord = '';
         $this->save($openFile);
+    }
+
+    //Метод для удаления всех определений
+    public function toZeroDefinition()
+    {
+        $fileOpen = $this->open();
+        foreach ($fileOpen as $keys => $values){
+            $fileOpen[$keys]->definition = '';
+        }
+        $this->save($fileOpen);
     }
 
     //Получаем ключ админа
@@ -213,14 +232,6 @@ class Game extends OsagoBase
                 }
             }
         }
-
-//        foreach ($openFile as $keys => $values){
-//            foreach ($values as $key => $value){
-//                if($value == $id){
-//                    return
-//                }
-//            }
-//        }
     }
 
     //Метод для проверки пустоты файла

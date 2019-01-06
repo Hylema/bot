@@ -11,6 +11,7 @@ class GameResult extends Game
                 $this->searchId($this->id);
                 break;
             case '+':
+                //Начинаем новую игру
                 $this->newGame();
                 break;
             case 'exit':
@@ -21,6 +22,7 @@ class GameResult extends Game
         }
     }
 
+    //Метод делает проверку, отправляет игроков и админа по своим коверсейшенам
     public function newGame()
     {
         if($this->user == 'Admin'){

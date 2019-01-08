@@ -102,6 +102,11 @@ class Game extends OsagoBase
 
     public function gameEnd()
     {
+        //Для сайта
+        $fileOpen = $this->open();
+        $fileOpen[$this->getKeyAdmin()]->nameWinner = $this->getNameWinner();
+        $this->save($fileOpen);
+
         $this->sendText('Игра окончена, победил игрок с ником - '.$this->getNameWinner());
         $this->bot->selectConversation('Basic');
     }
@@ -188,21 +193,30 @@ class Game extends OsagoBase
         return $openFile[$this->getKeyAdmin()]->adminWord;
     }
 
-    //Удаляем слово админа
+    //Метод для удаления данных у админа
     public function deleteWord()
     {
         $openFile = $this->open();
-        $openFile[$this->getKeyAdmin()]->adminWord = '';
+
+        $keyAdmin = $this->getKeyAdmin();
+
+        $openFile[$keyAdmin]->adminWord = '';
+        $openFile[$keyAdmin]->adminStatus = false;
+        $openFile[$keyAdmin]->definition = '';
+
         $this->save($openFile);
     }
 
-    //Метод для удаления всех определений
+    //Метод для удаления данных у игрока
     public function toZeroDefinition()
     {
         $fileOpen = $this->open();
-        foreach ($fileOpen as $keys => $values){
-            $fileOpen[$keys]->definition = '';
-        }
+        $key = $this->getKeyPlayer();
+
+        $fileOpen[$key]->definition = '';
+        $fileOpen[$key]->playerChoose = '';
+        $fileOpen[$key]->adminOrPlayer = '';
+
         $this->save($fileOpen);
     }
 

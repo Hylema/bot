@@ -43,11 +43,6 @@ class Voting extends Game
 
 
         $this->gameResult();
-
-        //Удалить слово у админа
-        $this->deleteWord();
-        //Обнулить определения
-        $this->toZeroDefinition();
     }
 
     //Метод для вывода сообщения кого выбрал игрок
@@ -60,6 +55,7 @@ class Voting extends Game
         } else {
             return $this->sendText('Вы выбрали ответ игрока '.$openFile[$answerPlayer]->nickName.', этот игрок является обычным игроком, поэтому он получает 1 очко');
         }
+
     }
 
     //Метод для определения кого выбрал игрок, если игрок выбрал админа - ему начисляется 3 очка, если игрок выбрал другого игрока, тогда этому игроку начисляется 1 очко
@@ -69,15 +65,25 @@ class Voting extends Game
         $openFile = $this->open();
 
         $keyAdmin = $this->getKeyAdmin();
+        $keyPlayer = $this->getKeyPlayer();
 
         //Если игрок выбрал админа
         if($keyAdmin == $answerPlayer){
-            $key = $this->getKeyPlayer();
+            $key = $keyPlayer;
             $num = 3;
+
+            //Для отображения на сайте
+            $openFile[$keyPlayer]->adminOrPlayer = 'admin';
         } else {
             $key = $answerPlayer;
             $num = 1;
+
+            //Для отображения на сайте
+            $openFile[$keyPlayer]->adminOrPlayer = 'player';
         }
+
+        //Для отображения на сайте
+        $openFile[$keyPlayer]->playerChoose = $openFile[$answerPlayer]->nickName;
 
         $openFile[$key]->points += $num;
         $openFile[$keyAdmin]->playersReady += 1;

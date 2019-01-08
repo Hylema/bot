@@ -1,23 +1,24 @@
-<template>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-8 col-md-offset-2">
-                <div class="panel panel-default">
-                    <div class="panel-heading">Example Component</div>
+<!--<template>-->
+    <!--<div>-->
+        <!--<div v-for="{ nickName, points } in urldata">-->
+            <!--<div>{{ nickName }}</div>-->
+            <!--<div>{{ points }}</div>-->
+        <!--</div>-->
+    <!--</div>-->
+<!--</template>-->
 
-                    <div class="panel-body">
-                        I'm an example component!
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</template>
-
-<script>
-    export default {
-        mounted() {
-            console.log('Component mounted.')
-        }
-    }
-</script>
+<!--<script>-->
+    <!--export default {-->
+        <!--props: [-->
+            <!--'urldata'-->
+        <!--],-->
+        <!--mounted() {-->
+            <!--this.update()-->
+        <!--},-->
+        <!--methods: {-->
+            <!--update: function () {-->
+                <!--console.log(this.jsonArray);-->
+            <!--}-->
+        <!--},-->
+    <!--}-->
+<!--</script>-->

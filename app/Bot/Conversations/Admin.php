@@ -61,6 +61,8 @@ class Admin extends Game
         $this->adminStatus = false;
         $this->playersReady = 0;
         $this->points = 0;
+        $this->id = 1;
+        $this->nameWinner = '';
 
         //Переводим админа на последний этап
         $this->stageForAdmin = '4';
@@ -73,7 +75,6 @@ class Admin extends Game
             $keyAdmin = $this->getKeyAdmin();
             $fileOpen[$keyAdmin]->adminWord = $this->adminWord;
             $fileOpen[$keyAdmin]->definition = $this->definition;
-            $fileOpen[$keyAdmin]->adminStatus = $this->adminStatus;
             $fileOpen[$keyAdmin]->playersReady = $this->playersReady;
             $this->save($fileOpen);
         } else {
@@ -83,7 +84,9 @@ class Admin extends Game
             $this->arrayDataForAdmin['definition'] = $this->definition;
             $this->arrayDataForAdmin['adminStatus'] = $this->adminStatus;
             $this->arrayDataForAdmin['playersReady'] = $this->playersReady;
+            $this->arrayDataForAdmin['nameWinner'] = $this->nameWinner;
             $this->arrayDataForAdmin['points'] = $this->points;
+            $this->arrayDataForAdmin['id'] = $this->id;
 
             //Для первой игры. Происходит запись данных в game.json
             $this->gameArray[] = $this->arrayDataForAdmin;

@@ -61,6 +61,10 @@ class Player extends Game{
             $this->arrayDataForPlayer['points'] = $this->playerPoints;
             $this->arrayDataForPlayer['definition'] = $this->playerDefinition;
 
+            //Для отображения на сайте
+            $this->arrayDataForPlayer['playerChoose'] = "";
+            $this->arrayDataForPlayer['adminOrPlayer'] = "";
+
             //В массив game.json ыы добавляем нового игрока
             $this->addPlayerForGame();
         }

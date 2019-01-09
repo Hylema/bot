@@ -194,7 +194,7 @@ class Game extends OsagoBase
     }
 
     //Метод для удаления данных у админа
-    public function deleteWord()
+    public function deleteDataAdminInGameJson()
     {
         $openFile = $this->open();
 
@@ -208,7 +208,7 @@ class Game extends OsagoBase
     }
 
     //Метод для удаления данных у игрока
-    public function toZeroDefinition()
+    public function deleteDataPlayerInGameJson()
     {
         $fileOpen = $this->open();
         $key = $this->getKeyPlayer();

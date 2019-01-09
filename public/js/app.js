@@ -377,6 +377,33 @@ module.exports = {
 /* 1 */
 /***/ (function(module, exports) {
 
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports) {
+
 /* globals __VUE_SSR_CONTEXT__ */
 
 // IMPORTANT: Do NOT use ES2015 features in this file.
@@ -480,33 +507,6 @@ module.exports = function normalizeComponent (
     options: options
   }
 }
-
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
 
 
 /***/ }),
@@ -11704,7 +11704,7 @@ Vue.compile = compileToFunctions;
 
 module.exports = Vue;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2), __webpack_require__(13).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(13).setImmediate))
 
 /***/ }),
 /* 5 */
@@ -12169,7 +12169,7 @@ module.exports = Cancel;
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(12);
-module.exports = __webpack_require__(53);
+module.exports = __webpack_require__(52);
 
 
 /***/ }),
@@ -12206,11 +12206,8 @@ __webpack_require__(22);
 window.Vue = __webpack_require__(4);
 
 //Место для записи компонентов
-// Vue.component('component-test', require('./components/Example'));
-// Vue.component('component-prop', require('./components/PropComponent'));
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('component-admin', __webpack_require__(46));
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('component-player', __webpack_require__(49));
-__WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('component-game-result', __webpack_require__(52));
 
 var app = new __WEBPACK_IMPORTED_MODULE_0_vue___default.a({
     el: '#app',
@@ -12286,7 +12283,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
                          (typeof global !== "undefined" && global.clearImmediate) ||
                          (this && this.clearImmediate);
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
 /* 14 */
@@ -12479,7 +12476,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2), __webpack_require__(5)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(5)))
 
 /***/ }),
 /* 15 */
@@ -15111,7 +15108,7 @@ if (inBrowser && window.Vue) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(1)
+var normalizeComponent = __webpack_require__(2)
 /* script */
 var __vue_script__ = __webpack_require__(17)
 /* template */
@@ -15212,7 +15209,7 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(1)
+var normalizeComponent = __webpack_require__(2)
 /* script */
 var __vue_script__ = __webpack_require__(20)
 /* template */
@@ -32457,7 +32454,7 @@ if (token) {
   }
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2), __webpack_require__(24)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(24)(module)))
 
 /***/ }),
 /* 24 */
@@ -46151,7 +46148,7 @@ module.exports = function spread(callback) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(1)
+var normalizeComponent = __webpack_require__(2)
 /* script */
 var __vue_script__ = __webpack_require__(47)
 /* template */
@@ -46238,25 +46235,28 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
-            i: 0
+            gameJson: []
         };
     },
-
-    props: ['urldata'],
     mounted: function mounted() {
         this.update();
     },
 
     methods: {
         update: function update() {
-            console.log(this.jsonArray);
-        },
-        num: function num() {
-            return this.i += 1;
+            var _this = this;
+
+            axios.get('/api/game').then(function (response) {
+                console.log(response);
+                _this.gameJson = response.data;
+            });
         }
     }
 });
@@ -46269,86 +46269,89 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    _vm._l(_vm.urldata, function(ref) {
-      var nickName = ref.nickName
-      var points = ref.points
-      var id = ref.id
-      var definition = ref.definition
-      var adminWord = ref.adminWord
-      var adminStatus = ref.adminStatus
-      var nameWinner = ref.nameWinner
-      return id == 1
-        ? _c("div", [
-            nameWinner == ""
+  return _c("div", [
+    _vm.gameJson != ""
+      ? _c(
+          "div",
+          _vm._l(_vm.gameJson, function(ref) {
+            var nickName = ref.nickName
+            var points = ref.points
+            var id = ref.id
+            var definition = ref.definition
+            var adminWord = ref.adminWord
+            var adminStatus = ref.adminStatus
+            var nameWinner = ref.nameWinner
+            return id == 1
               ? _c("div", [
-                  adminStatus != true
+                  nameWinner == ""
                     ? _c("div", [
-                        _c("div", { staticClass: "adminBlock" }, [
-                          adminWord == ""
-                            ? _c("div", [
-                                _c("div", [
-                                  _vm._v("Админ ещё не загадал слово")
-                                ])
+                        adminStatus != true
+                          ? _c("div", [
+                              _c("div", { staticClass: "adminBlock" }, [
+                                adminWord == ""
+                                  ? _c("div", [
+                                      _c("div", [
+                                        _vm._v("Админ ещё не загадал слово")
+                                      ])
+                                    ])
+                                  : _c("div", [
+                                      _c("div", [
+                                        _vm._v(
+                                          "Загаданное слово админа: " +
+                                            _vm._s(adminWord)
+                                        )
+                                      ])
+                                    ])
                               ])
-                            : _c("div", [
-                                _c("div", [
+                            ])
+                          : _c(
+                              "div",
+                              { staticClass: "adminBlock" },
+                              [
+                                _c("strong", [_vm._v("Определения: ")]),
+                                _vm._v(" "),
+                                _vm._l(_vm.urldata, function(ref) {
+                                  var definition = ref.definition
+                                  return id == 1
+                                    ? _c("div", [
+                                        _c("strong", [
+                                          _vm._v("  - " + _vm._s(definition))
+                                        ]),
+                                        _c("br")
+                                      ])
+                                    : _vm._e()
+                                }),
+                                _vm._v(" "),
+                                _c("strong", [
                                   _vm._v(
-                                    "Загаданное слово админа: " +
-                                      _vm._s(adminWord)
+                                    "Выберите самое подходящее определение"
                                   )
                                 ])
-                              ])
-                        ])
+                              ],
+                              2
+                            )
                       ])
-                    : _c(
-                        "div",
-                        { staticClass: "adminBlock" },
-                        [
-                          _c("strong", [_vm._v("Определения: ")]),
-                          _vm._v(" "),
-                          _vm._l(_vm.urldata, function(ref) {
-                            var definition = ref.definition
-                            return id == 1
-                              ? _c("div", [
-                                  _c("strong", [
-                                    _vm._v(
-                                      " " +
-                                        _vm._s(_vm.num) +
-                                        " - " +
-                                        _vm._s(definition)
-                                    )
-                                  ]),
-                                  _c("br")
-                                ])
-                              : _vm._e()
-                          }),
-                          _vm._v(" "),
-                          _c("strong", [
-                            _vm._v("Выберите самое подходящее определение")
-                          ])
-                        ],
-                        2
-                      )
+                    : _c("div", { staticClass: "adminBlock" }, [
+                        _c("strong", [
+                          _vm._v(
+                            "Игрок с ником " +
+                              _vm._s(nameWinner) +
+                              " победил в этой игре"
+                          )
+                        ]),
+                        _c("br"),
+                        _vm._v(" "),
+                        _c("strong", [_vm._v("Игра окончена")])
+                      ])
                 ])
-              : _c("div", { staticClass: "adminBlock" }, [
-                  _c("strong", [
-                    _vm._v(
-                      "Игрок с ником " +
-                        _vm._s(nameWinner) +
-                        " победил в этой игре"
-                    )
-                  ]),
-                  _c("br"),
-                  _vm._v(" "),
-                  _c("strong", [_vm._v("Игра окончена")])
-                ])
-          ])
-        : _vm._e()
-    }),
-    0
-  )
+              : _vm._e()
+          }),
+          0
+        )
+      : _c("div", { staticClass: "playerBlock" }, [
+          _c("strong", [_vm._v("Админа нету в игре")])
+        ])
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -46365,7 +46368,7 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(1)
+var normalizeComponent = __webpack_require__(2)
 /* script */
 var __vue_script__ = __webpack_require__(50)
 /* template */
@@ -46461,18 +46464,25 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    props: ['urldata'],
+    data: function data() {
+        return {
+            gameJson: []
+        };
+    },
     mounted: function mounted() {
         this.update();
     },
 
     methods: {
         update: function update() {
-            console.log(this.jsonArray);
+            var _this = this;
+
+            axios.get('/api/game').then(function (response) {
+                console.log(response);
+                _this.gameJson = response.data;
+            });
         }
     }
 });
@@ -46485,105 +46495,114 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [
-      _c(
-        "div",
-        { staticClass: "playerBlock" },
-        _vm._l(_vm.urldata, function(ref) {
-          var nickName = ref.nickName
-          var points = ref.points
-          var id = ref.id
-          var definition = ref.definition
-          var playerChoose = ref.playerChoose
-          var adminOrPlayer = ref.adminOrPlayer
-          return id != 1
-            ? _c("div", { staticClass: "dataPlayer" }, [
-                _c("div", [
-                  _c("div", [
-                    _c("strong", [_vm._v("Имя игрока: " + _vm._s(nickName))]),
-                    _c("br"),
-                    _vm._v(" "),
-                    _c("strong", [_vm._v("Очков у игрока: " + _vm._s(points))]),
-                    _vm._v(" "),
-                    definition == ""
-                      ? _c("div", [
-                          _c("strong", [
-                            _vm._v("Игрок ещё не написал определение слова")
+  return _c("div", [
+    _vm.gameJson != ""
+      ? _c(
+          "div",
+          [
+            _c(
+              "div",
+              { staticClass: "playerBlock" },
+              _vm._l(_vm.gameJson, function(ref) {
+                var nickName = ref.nickName
+                var points = ref.points
+                var id = ref.id
+                var definition = ref.definition
+                var playerChoose = ref.playerChoose
+                var adminOrPlayer = ref.adminOrPlayer
+                return id != 1
+                  ? _c("div", { staticClass: "dataPlayer" }, [
+                      _c("strong", [_vm._v("Имя игрока: " + _vm._s(nickName))]),
+                      _c("br"),
+                      _vm._v(" "),
+                      _c("strong", [
+                        _vm._v("Очков у игрока: " + _vm._s(points))
+                      ]),
+                      _c("br"),
+                      _vm._v(" "),
+                      definition == ""
+                        ? _c("div", [
+                            _c("strong", [
+                              _vm._v("Игрок ещё не написал определение слова")
+                            ])
                           ])
-                        ])
-                      : _c("div", [
-                          _c("strong", [
-                            _vm._v("Игрок написал определение слова")
+                        : _c("div", [
+                            _c("strong", [
+                              _vm._v("Игрок написал определение слова")
+                            ])
                           ])
+                    ])
+                  : _vm._e()
+              }),
+              0
+            ),
+            _vm._v(" "),
+            _vm._l(_vm.gameJson, function(ref) {
+              var nickName = ref.nickName
+              var playerChoose = ref.playerChoose
+              var adminOrPlayer = ref.adminOrPlayer
+              var id = ref.id
+              return id != 1
+                ? _c("div", [
+                    playerChoose != "" && adminOrPlayer != ""
+                      ? _c("div", { staticClass: "gameResult" }, [
+                          adminOrPlayer == "admin"
+                            ? _c("div", [
+                                _c("strong", [
+                                  _vm._v(
+                                    "Результаты игры игрока " + _vm._s(nickName)
+                                  )
+                                ]),
+                                _c("br"),
+                                _c("br"),
+                                _vm._v(" "),
+                                _c("strong", [
+                                  _vm._v(
+                                    "Вы выбрали определение админа, вы получаете 3 очка!"
+                                  )
+                                ]),
+                                _c("br"),
+                                _vm._v(" "),
+                                _c("strong", [
+                                  _vm._v("Для продолжения игры напишите +")
+                                ]),
+                                _c("br")
+                              ])
+                            : _c("div", [
+                                _c("strong", [
+                                  _vm._v(
+                                    "Результаты игры игрока " + _vm._s(nickName)
+                                  )
+                                ]),
+                                _c("br"),
+                                _c("br"),
+                                _vm._v(" "),
+                                _c("strong", [
+                                  _vm._v(
+                                    "Вы выбрали определение игрока с ником " +
+                                      _vm._s(playerChoose) +
+                                      ", этот игрок получает 1 очко!"
+                                  )
+                                ]),
+                                _c("br"),
+                                _vm._v(" "),
+                                _c("strong", [
+                                  _vm._v("Для продолжения игры напишите +")
+                                ]),
+                                _c("br")
+                              ])
                         ])
-                  ])
-                ])
-              ])
-            : _vm._e()
-        }),
-        0
-      ),
-      _vm._v(" "),
-      _vm._l(_vm.urldata, function(ref) {
-        var nickName = ref.nickName
-        var playerChoose = ref.playerChoose
-        var adminOrPlayer = ref.adminOrPlayer
-        var id = ref.id
-        return id != 1
-          ? _c("div", [
-              playerChoose != "" && adminOrPlayer != ""
-                ? _c("div", { staticClass: "gameResult" }, [
-                    adminOrPlayer == "admin"
-                      ? _c("div", [
-                          _c("strong", [
-                            _vm._v("Результаты игры игрока " + _vm._s(nickName))
-                          ]),
-                          _c("br"),
-                          _c("br"),
-                          _vm._v(" "),
-                          _c("strong", [
-                            _vm._v(
-                              "Вы выбрали определение админа, вы получаете 3 очка!"
-                            )
-                          ]),
-                          _c("br"),
-                          _vm._v(" "),
-                          _c("strong", [
-                            _vm._v("Для продолжения игры напишите +")
-                          ]),
-                          _c("br")
-                        ])
-                      : _c("div", [
-                          _c("strong", [
-                            _vm._v("Результаты игры игрока " + _vm._s(nickName))
-                          ]),
-                          _c("br"),
-                          _c("br"),
-                          _vm._v(" "),
-                          _c("strong", [
-                            _vm._v(
-                              "Вы выбрали определение игрока с ником " +
-                                _vm._s(playerChoose) +
-                                ", этот игрок получает 1 очко!"
-                            )
-                          ]),
-                          _c("br"),
-                          _vm._v(" "),
-                          _c("strong", [
-                            _vm._v("Для продолжения игры напишите +")
-                          ]),
-                          _c("br")
-                        ])
+                      : _vm._e()
                   ])
                 : _vm._e()
-            ])
-          : _vm._e()
-      })
-    ],
-    2
-  )
+            })
+          ],
+          2
+        )
+      : _c("div", { staticClass: "playerBlock" }, [
+          _c("strong", [_vm._v("Игроков ещё нету в игре")])
+        ])
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -46597,36 +46616,6 @@ if (false) {
 
 /***/ }),
 /* 52 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var normalizeComponent = __webpack_require__(1)
-/* script */
-var __vue_script__ = null
-/* template */
-var __vue_template__ = null
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = null
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/assets/js/components/GameResult.vue"
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 53 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

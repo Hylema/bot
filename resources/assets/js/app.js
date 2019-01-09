@@ -21,11 +21,8 @@ require('./bootstrap');
 window.Vue = require('vue');
 
 //Место для записи компонентов
-// Vue.component('component-test', require('./components/Example'));
-// Vue.component('component-prop', require('./components/PropComponent'));
 Vue.component('component-admin', require('./components/Admin'));
 Vue.component('component-player', require('./components/Players'));
-Vue.component('component-game-result', require('./components/GameResult'));
 
 const app = new Vue({
     el: '#app',

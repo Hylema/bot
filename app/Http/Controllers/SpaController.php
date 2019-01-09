@@ -8,11 +8,7 @@ class SpaController extends Controller
 {
     public function index()
     {
-        $jsonArray = $this->getArrayGameJson();
-
-        return view('spa', [
-            "jsonArray" => $jsonArray,
-        ]);
+        return view('spa');
     }
 
     public function getArrayGameJson()

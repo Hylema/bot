@@ -17,7 +17,8 @@ use Illuminate\Http\Request;
 //    return $request->user();
 //});
 
-Route::get('/users', function () {
-//    return factory('App\User', 10)->make();
-    return "Привет мир";
-});
+//Route::get('/users', function () {
+////    return factory('App\User', 10)->make();
+//});
+
+Route::get('/game', 'SpaController@getArrayGameJson');

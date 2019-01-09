@@ -11,10 +11,8 @@ class GameResult extends Game
                 $this->searchId($this->id);
                 break;
             case '+':
-                //Удалить слово у админа
-                $this->deleteWord();
-                //Обнулить определения
-                $this->toZeroDefinition();
+                $this->deleteDataAdminInGameJson();
+                $this->deleteDataPlayerInGameJson();
                 //Начинаем новую игру
                 $this->newGame();
                 break;

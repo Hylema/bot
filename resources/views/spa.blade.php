@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <meta http-equiv="refresh" content="3">
+    {{--<meta http-equiv="refresh" content="3">--}}
     <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">
     <title>Vue SPA Demo</title>
 </head>
@@ -13,8 +13,8 @@
 <body>
 
 <div id="app">
-    <component-admin :urldata="{{ json_encode($jsonArray) }}"></component-admin>
-    <component-player :urldata="{{ json_encode($jsonArray) }}"></component-player>
+    <component-admin></component-admin>
+    <component-player></component-player>
 </div>
 
 <script src="{{ mix('js/app.js') }}"></script>
